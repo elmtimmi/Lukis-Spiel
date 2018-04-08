@@ -8,6 +8,7 @@ public class health : MonoBehaviour
     public int leben;
     public GameObject MainCamera;
     public float höchsterTreffer;
+    public GameObject Leben;
     // Use this for initialization
     void Start()
     {
@@ -17,10 +18,20 @@ public class health : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (this.GetComponent<health>().leben <= 0)
+        {
+            if (this.GetComponent<movement>() != null)
+            {
+                Destroy(this.GetComponent<movement>().Waffe.gameObject);
+            }
+            Destroy(this.gameObject);
+        }
+        Leben.GetComponent<TextMesh>().text = "" + this.GetComponent<health>().leben;
+        Leben.transform.rotation = Quaternion.identity;
     }
     void OnMouseDown()
     {
+        Debug.Log("asd");
         if (MainCamera.GetComponent<mainScript>().detectObject && MainCamera.GetComponent<mainScript>().spielerAmZug != spieler)
         {
             MainCamera.GetComponent<mainScript>().ZielObjekt = this.gameObject;

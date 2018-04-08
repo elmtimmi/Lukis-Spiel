@@ -91,7 +91,7 @@ public class mainScript : MonoBehaviour
     {
         if (schonGewürfelt == 0)
         {
-            zufallszahl = Random.Range(1, 7);
+            zufallszahl = Random.Range(1, 8);
             print("Du hast eine " + zufallszahl + " gewürfelt");
             schonGewürfelt++;
             if(zufallszahl == 1)
@@ -117,6 +117,18 @@ public class mainScript : MonoBehaviour
             if (zufallszahl == 6)
             {
                 consolenText = "Du bekommst eine Sniper";
+            }
+            if (zufallszahl == 7)
+            {
+                consolenText = "Du bekommst eine weitere Person";
+            }
+            if (zufallszahl == 8)
+            {
+                consolenText = "Du bekommst ein Auto";
+            }
+            if (zufallszahl == 9)
+            {
+                consolenText = "Du bekommst eine Raketenstation";
             }
         }
     }
