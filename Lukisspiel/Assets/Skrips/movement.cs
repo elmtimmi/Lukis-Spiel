@@ -1,189 +1,215 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class movement : MonoBehaviour {
-	public GameObject MainCamera;
-	public GameObject Pistole;
-	public GameObject Shotgun;
-	public GameObject MP;
-	public GameObject MG;
-	public GameObject Minigun;
-	public GameObject Sniper;
-	private mainScript a;
-	public int spieler;
-	public GameObject Waffe;
-	public int drehen;
-	public GameObject ray;
-	public GameObject Zielstrahl;
-	// Use this for initialization
-	void Start () {
-		a = MainCamera.GetComponent<mainScript>();
-		drehen = 2;
-		Zielstrahl.GetComponent<Renderer> ().enabled = false;
-	}
-	void OnMouseDown()
-	{
-		Debug.Log("touch1");
-		//if (Input.GetMouseButtonDown (0)) {
-			Debug.Log ("Mouse down");
+public class movement : MonoBehaviour
+{
+    public GameObject MainCamera;
+    public GameObject Pistole;
+    public GameObject Shotgun;
+    public GameObject MP;
+    public GameObject MG;
+    public GameObject Minigun;
+    public GameObject Sniper;
+    private mainScript a;
+    public int spieler;
+    public GameObject Waffe;
+    public GameObject ray;
+    public GameObject Zielstrahl;
+    public GameObject Capsule;
+    public bool activeSpieler;
+    bool einmaligerDürchlauf;
+    public GameObject Leben;
+    public bool schießen;
+    public bool geschossen;
 
-		switch (a.zufallszahl) {
+    float maxRange = 500;
+    RaycastHit hit;
+    // Use this for initialization
+    void Start()
+    {
+        a = MainCamera.GetComponent<mainScript>();
+    }
+    void OnMouseDown()
+    {
+        if (a.spielerAmZug == spieler)
+        {
+            activeSpieler = true;
+        }
+        einmaligerDürchlauf = true;
+        switch (a.zufallszahl)
+        {
+            case 1:
+                print("Pistole");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(Pistole, Pistole.transform.position, this.transform.rotation);
+                break;
 
-		case 1:
-			print ("Pistole");
-			if (Waffe != null) {
-				Destroy (Waffe);
-			}
-			Instantiate (Pistole, Pistole.transform.position, this.transform.rotation);
-			Waffe = Pistole;
-			break;
+            case 2:
+                print("Shotgun");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(Shotgun, Shotgun.transform.position, this.transform.rotation);
+                break;
+            case 3:
+                print("MP");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(MP, MP.transform.position, this.transform.rotation);
+                break;
+            case 4:
+                print("MG");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(MG, MG.transform.position, this.transform.rotation);
+                break;
+            case 5:
+                print("Minigun");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(Minigun, Minigun.transform.position, this.transform.rotation);
+                break;
+            case 6:
+                print("Sniper");
+                if (Waffe != null)
+                {
+                    Destroy(Waffe);
+                }
+                Waffe = Instantiate(Sniper, Sniper.transform.position, this.transform.rotation);
+                break;
 
-		case 2:
-			print ("Shotgun");
-			if (Waffe != null){
-					Destroy (Waffe);
-			}
-			Instantiate(Shotgun, Shotgun.transform.position, this.transform.rotation);
-			Waffe = Shotgun;
-			break; 
-		case 3:
-			print ("MP");
-			if (Waffe != null) {
-				Destroy (Waffe);
-			}
-			Instantiate(MP, MP.transform.position, this.transform.rotation);
-			Waffe = MP;
-			break;
-		case 4:
-			print ("MG");
-			if (Waffe != null) {
-				Destroy (Waffe);
-			}
-			Instantiate(MG, MG.transform.position, this.transform.rotation);
-			Waffe = MG;
-			break; 
-		case 5:
-			print ("Minigun");
-			if (Waffe != null) {
-				Destroy (Waffe);
-			}
-			Instantiate(Minigun, Minigun.transform.position, this.transform.rotation);
-			Waffe = Minigun;				break;
-		case 6:
-			print ("Sniper");
-			if (Waffe != null) {
-				Destroy (Waffe);
-			}
-			Instantiate(Sniper, Sniper.transform.position, this.transform.rotation);
-			Waffe = Sniper;
-			break;
+            default:
+                break;
+        }
+        a.zufallszahl = 0;
 
-			default:
-				break;
-			}
-			a.zufallszahl = 0;
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if(spieler == 1)
+        {
+            this.transform.Find("Kopf").gameObject.GetComponent<Renderer>().material.color = Color.red;
+        }
+        if (spieler == 2)
+        {
+            this.transform.Find("Kopf").gameObject.GetComponent<Renderer>().material.color = Color.green;
+        }
+        if (Input.GetMouseButtonDown(0) && !einmaligerDürchlauf)
+        {
+            activeSpieler = false;
+            //Debug.DrawRay(ray.transform.position, (a.hitPosition - transform.position), Color.green);
+            if (schießen && Physics.Raycast(Waffe.transform.position, (a.hitPosition - Waffe.transform.position), out hit, maxRange))
+            {
+                if (a.ZielObjekt != null)
+                {
+                    if (hit.transform.parent.name == a.ZielObjekt.transform.name)
+                    {
+                        Debug.Log(hit.transform.name);
+                        Debug.Log(hit.transform.parent.transform.name);
+                        // In Range and i can see you!
 
-	}
-	// Update is called once per frame
-	void Update () {
-		Debug.DrawRay(ray.transform.position, ray.transform.forward * 100, Color.green);
-		if (Waffe != null) {
-			Waffe.transform.position = this.transform.position + new Vector3 (-1, 0, 0);
-			if (drehen == 1) {
-				Waffe.transform.position += new Vector3 (2f, 0, 0);
-			}
-			Waffe.transform.rotation = this.transform.rotation;
-		}
-		if (a.SpielerAmZug == spieler) {
-			if (a.maxStrecke < 100) {
-				// Vorwärts
-				if (Input.GetKey (KeyCode.D)) {
-					if (drehen == 2) {
-						this.transform.position += new Vector3 (-1.5f, 0, 0);
-					}
-					this.transform.position += new Vector3 (0.03f, 0, 0);
-					a.maxStrecke++;
-					this.transform.rotation = Quaternion.Euler (0, 180, 0);
-					drehen = 1;
-				}
-				// Rückwärts
-				if (Input.GetKey (KeyCode.A)) {
-					if (drehen == 1) {
-						this.transform.position += new Vector3 (1.5f, 0, 0);
-					}
-					this.transform.position += new Vector3 (-0.03f, 0, 0);
-					a.maxStrecke++;
-					this.transform.rotation = Quaternion.Euler (0, 0, 0);
-					drehen = 2;
-				}
-				// Schießen
-				if (Input.GetKeyDown (KeyCode.G) && Waffe != null) {
-					if (Zielstrahl.gameObject.activeSelf) {
-						Zielstrahl.GetComponent<Renderer> ().enabled = false;
-					} else {
-						Zielstrahl.GetComponent<Renderer> ().enabled = true;
-						Zielstrahl.transform.rotation = Quaternion.Euler (0, 0, 0);
-					}
-				}
-				if (Waffe == Pistole) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (2, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-2, 0, 0);
-					}
-				}
-
-				if (Waffe == Shotgun) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (5, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-5, 0, 0);
-					}
-				}
-
-				if (Waffe == MP) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (3, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-3, 0, 0);
-					}
-				}
-
-				if (Waffe == MG) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (2, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-2, 0, 0);
-					}
-				}
-
-				if (Waffe == Minigun) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (3, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-3, 0, 0);
-					}
-				}
-
-				if (Waffe == Sniper) {
-					while (this.transform.rotation == Quaternion.Euler (30, 0, 0)) {
-						Zielstrahl.transform.Rotate (1, 0, 0);
-					}
-					while (this.transform.rotation == Quaternion.Euler (-30, 0, 0)) {
-						Zielstrahl.transform.Rotate (-1, 0, 0);
-					}
-				}
-
-			}
-		} else { 
-			Zielstrahl.GetComponent<Renderer> ().enabled = false;
-		}	
-	}
+                        if (Waffe != null && schießen && a.ZielObjekt != null)
+                        {
+                            schießen = false;
+                            a.detectObject = false;
+                            a.ZielObjekt.GetComponent<health>().leben -= 5;
+                            a.consolenText = "Feind getroffen";
+                            a.ZielObjekt = null;
+                            geschossen = true;
+                        }
+                    }
+                    else
+                    {
+                        a.consolenText = "Gegenstand im Weg!";
+                    }
+                }
+                else
+                {
+                    a.consolenText = "Falsches Ziel";
+                }
+            }
+            else if(schießen)
+            {
+                a.consolenText = "Falsches Ziel";
+            }
+        }
+        else
+        {
+            einmaligerDürchlauf = false;
+        }
+        Capsule.GetComponent<Renderer>().enabled = false;
+        Leben.GetComponent<TextMesh>().text = "" + this.GetComponent<health>().leben;
+        Leben.transform.rotation = Quaternion.identity;
+        if (this.GetComponent<health>().leben <= 0)
+        {
+            Destroy(Waffe.gameObject);
+            Destroy(this.gameObject);
+        }
+        if (Waffe != null)
+        {
+            Waffe.transform.rotation = this.transform.rotation;
+            if (this.transform.rotation.y == -1)
+            {
+                Waffe.transform.position = this.transform.position + new Vector3(0.35f, 0, 0);
+            }
+            else if (this.transform.rotation.y == 0)
+            {
+                Waffe.transform.position = this.transform.position - new Vector3(0.35f, 0, 0);
+            }else
+            {
+                Waffe.transform.position = this.transform.position + new Vector3(0.35f, 0, 0);
+            }
+        }
+        if (a.spielerAmZug == spieler && activeSpieler)
+        {
+            Capsule.GetComponent<Renderer>().enabled = true;
+            Capsule.GetComponent<Renderer>().material.color = Color.blue;
+            if (a.maxStrecke < 100)
+            {
+                // Vorwärts
+                if (Input.GetKey(KeyCode.D))
+                {
+                    this.transform.position += new Vector3(0.03f, 0, 0);
+                    a.maxStrecke++;
+                    this.transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                // Rückwärts
+                if (Input.GetKey(KeyCode.A))
+                {
+                    this.transform.position += new Vector3(-0.03f, 0, 0);
+                    a.maxStrecke++;
+                    this.transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                // Schießen
+                if (Input.GetKey(KeyCode.G) && Waffe != null && !schießen && !geschossen)
+                {
+                    schießen = true;
+                    a.detectObject = true;
+                }
+            }
+        }
+        else
+        {
+           // schießen = false;
+        }
+        if (a.spielerAmZug != spieler)
+        {
+            geschossen = false;
+            schießen = false;
+        }
+    }
 }
 	
