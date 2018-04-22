@@ -31,12 +31,11 @@ public class health : MonoBehaviour
     }
     void OnMouseDown()
     {
-        Debug.Log("asd");
         if (MainCamera.GetComponent<mainScript>().detectObject && MainCamera.GetComponent<mainScript>().spielerAmZug != spieler)
         {
+            Debug.Log(this.transform.name);
             MainCamera.GetComponent<mainScript>().ZielObjekt = this.gameObject;
             MainCamera.GetComponent<mainScript>().hitPosition = this.transform.position + new Vector3(0, höchsterTreffer, 0);
         }
     }
 }
-
